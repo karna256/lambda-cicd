@@ -7,19 +7,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Configure AWS credentials
+      - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          role-to-assume: arn:aws:iam::949263681218:role/service-role/cicd-role-174ywra0
           aws-region: us-east-1
       - name: Creating zip
         run: |
           sudo apt install zip
-          mkdir -p ./deploy 
-          cp ./lambda_function.py  ./deploy
-          cd deploy
+          cd lambda
           zip -r lambda_zip.zip *
       - name: Deploying lambda
         run: |
