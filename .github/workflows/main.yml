@@ -21,7 +21,7 @@ jobs:
           sudo apt install zip
           mkdir -p ./deploy 
           pip install snowflake-connector-python --platform manylinux2010_x86_64 --only-binary=:all: -t ./deploy
-          cp ./lambda_function.py  ./deployment_zip
+          cp ./lambda_function.py  ./deploy
           cd deploy
           zip -r lambda_zip.zip *
       - name: Deploying lambda
