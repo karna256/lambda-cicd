@@ -1,0 +1,29 @@
+name : lambda-deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  lambda-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+      - name: Creating zip
+        run: |
+          sudo apt install zip
+          mkdir -p ./deploy 
+          pip install snowflake-connector-python --platform manylinux2010_x86_64 --only-binary=:all: -t ./deploy
+          cp ./lambda_function.py  ./deployment_zip
+          cd deploy
+          zip -r lambda_zip.zip *
+      - name: Deploying lambda
+        run: |
+          aws lambda update-function-code --function-name cicd --zip-file fileb://./deploy/lambda_zip.zip
