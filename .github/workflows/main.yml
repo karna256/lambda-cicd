@@ -4,6 +4,7 @@ on:
     branches:
       - dev
 jobs:
+
   lambda-deploy:
     runs-on: ubuntu-latest
     permissions:
@@ -12,6 +13,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Get list of changed files
+        id: changed-files
+        run: |
+          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
+          echo "$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
@@ -20,23 +26,14 @@ jobs:
       - name: Install zip
         run: |
           sudo apt install zip
-      - name: Print event type
-        run: |
-          echo "Event type: ${{ github.event_name }}"
-      - name: Print event payload
-        run: echo "${{ toJson(github.event) }}"
-      - name: Print event paths
-        run: |
-          echo "Event paths:"
-          echo "${{ toJson(github.event.paths) }}"
       - name: Deploy lambda1
-        if: contains(github.event.paths, 'lambda-1/')
+        if: contains(steps.changed-files.outputs.files, 'lambda-1/')
         run: |
           cd lambda-1
           zip -r lambda_zip.zip *
           aws lambda update-function-code --function-name "lambda-1-${GITHUB_REF##*/}" --zip-file fileb://./lambda_zip.zip
       - name: Deploy lambda2
-        if: contains(github.event.paths, 'lambda-2/')
+        if: contains(steps.changed-files.outputs.files, 'lambda-2/')
         run: |
           cd lambda-2
           zip -r lambda_zip.zip *
