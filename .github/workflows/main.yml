@@ -1,4 +1,4 @@
-name : lambda-deploy-dev
+name : lambda-deploy
 on:
   push:
     branches:
