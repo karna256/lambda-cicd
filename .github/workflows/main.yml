@@ -25,7 +25,7 @@ jobs:
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
         run: |
-          echo "git log --one-line"
+          git log --oneline
           git diff --name-only HEAD~1 HEAD > changes.txt
           if grep -q "lambda-1" changes.txt; then
             echo "Changes detected"
