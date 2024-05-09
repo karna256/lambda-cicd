@@ -22,4 +22,4 @@ jobs:
           zip -r lambda_zip.zip *
       - name: Deploying lambda
         run: |
-          aws lambda update-function-code --function-name cicd --zip-file fileb://./deploy/lambda_zip.zip
+          aws lambda update-function-code --function-name cicd --zip-file fileb://./lambda/lambda_zip.zip
