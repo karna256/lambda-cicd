@@ -24,7 +24,7 @@ jobs:
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
         run: |
-          if grep -q "lambda-1" <(git diff --name-only HEAD^); then
+          if grep -q "lambda-1" <(git diff --name-only); then
             echo "Changes detected"
           fi
         working-directory: lambda-1
@@ -40,7 +40,7 @@ jobs:
       - name: Check for changes in lambda-2 directory
         id: lambda2-changed
         run: |
-          if grep -q "lambda-2" <(git diff --name-only HEAD^); then
+          if grep -q "lambda-2" <(git diff --name-only); then
             echo "Changes detected"
           fi
         working-directory: lambda-2
