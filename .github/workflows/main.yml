@@ -27,9 +27,7 @@ jobs:
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
         run: |
-          git diff --name-only HEAD~1 HEAD > changes.txt
-          cat changes.txt
-          if grep -q "lambda-1" changes.txt; then
+          if grep -q "lambda-1" <(git diff --name-only HEAD~1 HEAD); then
             echo "Changes detected"
           fi
         working-directory: lambda-1
@@ -44,13 +42,10 @@ jobs:
       - name: Check for changes in lambda-2 directory
         id: lambda2-changed
         run: |
-          git diff --name-only HEAD~1 HEAD > changes.txt
-          cat changes.txt
-          if grep -q "lambda-1" changes.txt; then
+          if grep -q "lambda-2" <(git diff --name-only HEAD~1 HEAD); then
             echo "Changes detected"
           fi
         working-directory: lambda-2
-        shell: bash
 
       - name: Deploy lambda2
         if: steps.lambda2-changed.outputs.stdout == 'Changes detected'
