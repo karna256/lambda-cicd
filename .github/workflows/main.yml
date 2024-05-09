@@ -20,12 +20,30 @@ jobs:
       - name: Install zip
         run: |
           sudo apt install zip
+
+      - name: Check for changes in lambda-1 directory
+        id: lambda1-changed
+        run: |
+          cd lambda-1
+          git diff --quiet HEAD^ || echo "Changes detected"
+        working-directory: lambda-1
+
       - name: Deploy lambda1
+        if: steps.lambda1-changed.outputs.stdout == 'Changes detected'
         run: |
           cd lambda-1
           zip -r lambda_zip.zip *
           aws lambda update-function-code --function-name "lambda-1-${GITHUB_REF##*/}" --zip-file fileb://./lambda_zip.zip
+
+      - name: Check for changes in lambda-2 directory
+        id: lambda2-changed
+        run: |
+          cd lambda-2
+          git diff --quiet HEAD^ || echo "Changes detected"
+        working-directory: lambda-2
+
       - name: Deploy lambda2
+        if: steps.lambda2-changed.outputs.stdout == 'Changes detected'
         run: |
           cd lambda-2
           zip -r lambda_zip.zip *
