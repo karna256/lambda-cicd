@@ -24,7 +24,6 @@ jobs:
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
         run: |
-          cd lambda-1
           git diff --quiet HEAD^ || echo "Changes detected"
         working-directory: lambda-1
 
@@ -38,7 +37,6 @@ jobs:
       - name: Check for changes in lambda-2 directory
         id: lambda2-changed
         run: |
-          cd lambda-2
           git diff --quiet HEAD^ || echo "Changes detected"
         working-directory: lambda-2
 
