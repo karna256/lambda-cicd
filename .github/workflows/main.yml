@@ -21,13 +21,13 @@ jobs:
         run: |
           sudo apt install zip
       - name: Deploy lambda1
-        if: contains(github.event.paths, 'lambda-1/**')
+        if: contains(github.event.paths, 'lambda-1/')
         run: |
           cd lambda-1
           zip -r lambda_zip.zip *
           aws lambda update-function-code --function-name "lambda-1-${GITHUB_REF##*/}" --zip-file fileb://./lambda_zip.zip
       - name: Deploy lambda2
-        if: contains(github.event.paths, 'lambda-2/**')
+        if: contains(github.event.paths, 'lambda-2/')
         run: |
           cd lambda-2
           zip -r lambda_zip.zip *
