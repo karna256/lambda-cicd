@@ -24,13 +24,14 @@ jobs:
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
         run: |
-          if git diff --quiet HEAD^; then
-          echo "No Changes detected"
+          if grep -q "lambda-1" <(git diff --name-only HEAD^); then
+            echo "Changes detected"
           fi
         working-directory: lambda-1
+        shell: bash
 
       - name: Deploy lambda1
-        if: steps.lambda1-changed.outputs.stdout != 'No Changes detected'
+        if: steps.lambda1-changed.outputs.stdout == 'Changes detected'
         run: |
           cd lambda-1
           zip -r lambda_zip.zip *
@@ -39,13 +40,14 @@ jobs:
       - name: Check for changes in lambda-2 directory
         id: lambda2-changed
         run: |
-          if git diff --quiet HEAD^; then
-          echo "No Changes detected"
+          if grep -q "lambda-2" <(git diff --name-only HEAD^); then
+            echo "Changes detected"
           fi
         working-directory: lambda-2
+        shell: bash
 
       - name: Deploy lambda2
-        if: steps.lambda2-changed.outputs.stdout != 'No Changes detecte'
+        if: steps.lambda2-changed.outputs.stdout == 'Changes detected'
         run: |
           cd lambda-2
           zip -r lambda_zip.zip *
