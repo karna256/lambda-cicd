@@ -20,6 +20,10 @@ jobs:
       - name: Install zip
         run: |
           sudo apt install zip
+      - name: Print event paths
+        run: |
+          echo "Event paths:"
+          echo "${{ toJson(github.event.paths) }}"
       - name: Deploy lambda1
         if: contains(github.event.paths, 'lambda-1/')
         run: |
