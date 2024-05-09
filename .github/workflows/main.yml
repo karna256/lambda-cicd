@@ -24,7 +24,8 @@ jobs:
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
         run: |
-          if grep -q "lambda-1" <(git diff --name-only ${{ github.event.before }} ${{ github.event.after }}); then
+          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > changes.txt
+          if grep -q "lambda-1" changes.txt; then
             echo "Changes detected"
           fi
         working-directory: lambda-1
