@@ -28,7 +28,6 @@ jobs:
             echo "Changes detected"
           fi
         working-directory: lambda-1
-        shell: bash
 
       - name: Deploy lambda1
         if: steps.lambda1-changed.outputs.stdout == 'Changes detected'
