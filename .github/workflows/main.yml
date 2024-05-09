@@ -13,7 +13,7 @@ jobs:
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
-          role-to-assume: arn:aws:iam::949263681218:role/service-role/cicd-role-174ywra0
+          role-to-assume: arn:aws:iam::949263681218:role/service-role/cicd-role-sd19bisk
           aws-region: us-east-1
       - name: Creating zip
         run: |
