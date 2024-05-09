@@ -45,7 +45,7 @@ jobs:
         working-directory: lambda-2
 
       - name: Deploy lambda2
-        if: steps.lambda2-changed.outputs.stdout != 'No Changes detected'
+        if: steps.lambda2-changed.outputs.stdout != 'No Changes detecte'
         run: |
           cd lambda-2
           zip -r lambda_zip.zip *
