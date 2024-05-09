@@ -20,6 +20,11 @@ jobs:
       - name: Install zip
         run: |
           sudo apt install zip
+      - name: Print event type
+        run: |
+          echo "Event type: ${{ github.event_name }}"
+      - name: Print event payload
+        run: echo "${{ toJson(github.event) }}"
       - name: Print event paths
         run: |
           echo "Event paths:"
