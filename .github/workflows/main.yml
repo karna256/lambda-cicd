@@ -23,7 +23,6 @@ jobs:
       - name: Install zip
         run: |
           sudo apt install zip
-          sudo apt install git
 
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
