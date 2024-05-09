@@ -14,15 +14,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: arn:aws:iam::949263681218:role/ankit-oidc-role
           aws-region: us-east-1
-      - name: Install zip
-        run: |
-          sudo apt install zip
 
       - name: Check for changes in lambda-1 directory
         id: lambda1-changed
