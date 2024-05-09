@@ -1,26 +1,58 @@
 name : lambda-deploy
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - dev
+      - qa
 jobs:
   lambda-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          fetch-depth: 0
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: arn:aws:iam::949263681218:role/ankit-oidc-role
           aws-region: us-east-1
-      - name: Creating zip
+      - name: Install zip
         run: |
           sudo apt install zip
-          mkdir -p ./deploy 
-          cp ./lambda_function.py  ./deploy
-          cd deploy
-          zip -r lambda_zip.zip *
-      - name: Deploying lambda
+          sudo apt install git
+
+      - name: Check for changes in lambda-1 directory
+        id: lambda1-changed
         run: |
-          aws lambda update-function-code --function-name cicd --zip-file fileb://./deploy/lambda_zip.zip
+          if grep -q "lambda-1" <(git diff --name-only HEAD~1 HEAD); then
+            change_detected="Changes detected"
+            echo "::set-output name=files::$change_detected"
+          fi
+        working-directory: lambda-1
+
+      - name: Deploy lambda1
+        if: steps.lambda1-changed.outputs.files == 'Changes detected'
+        run: |
+          cd lambda-1
+          zip -r lambda_zip.zip *
+          aws lambda update-function-code --function-name "lambda-1-${GITHUB_REF##*/}" --zip-file fileb://./lambda_zip.zip
+
+      - name: Check for changes in lambda-2 directory
+        id: lambda2-changed
+        run: |
+          if grep -q "lambda-2" <(git diff --name-only HEAD~1 HEAD); then
+            change_detected="Changes detected"
+            echo "::set-output name=files::$change_detected"
+          fi
+        working-directory: lambda-2
+
+      - name: Deploy lambda2
+        if: steps.lambda2-changed.outputs.files == 'Changes detected'
+        run: |
+          cd lambda-2
+          zip -r lambda_zip.zip *
+          aws lambda update-function-code --function-name "lambda-2-${GITHUB_REF##*/}" --zip-file fileb://./lambda_zip.zip
