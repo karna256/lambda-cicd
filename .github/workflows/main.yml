@@ -28,6 +28,7 @@ jobs:
         id: lambda1-changed
         run: |
           git diff --name-only HEAD~1 HEAD > changes.txt
+          cat changes.txt
           if grep -q "lambda-1" changes.txt; then
             echo "Changes detected"
           fi
@@ -44,6 +45,7 @@ jobs:
         id: lambda2-changed
         run: |
           git diff --name-only HEAD~1 HEAD > changes.txt
+          cat changes.txt
           if grep -q "lambda-1" changes.txt; then
             echo "Changes detected"
           fi
