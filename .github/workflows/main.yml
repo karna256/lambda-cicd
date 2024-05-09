@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - qa
 jobs:
   lambda-deploy:
     runs-on: ubuntu-latest
