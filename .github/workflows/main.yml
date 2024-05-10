@@ -21,33 +21,29 @@ jobs:
           role-to-assume: arn:aws:iam::949263681218:role/ankit-oidc-role
           aws-region: us-east-1
 
-      - name: Check for changes in lambda-1 directory
-        id: lambda1-changed
+      - name: Check for changes in lambda directories
+        id: lambda-changed
         run: |
+          cd lambda-1
           if grep -q "lambda-1" <(git diff --name-only HEAD~1 HEAD); then
             change_detected="Changes detected"
-            echo "::set-output name=files::$change_detected"
+            echo "::set-output name=lambda-1::$change_detected"
           fi
-        working-directory: lambda-1
+          cd ../lambda-2
+          if grep -q "lambda-2" <(git diff --name-only HEAD~1 HEAD); then
+              change_detected="Changes detected"
+              echo "::set-output name=lambda-2::$change_detected"
+          fi
 
       - name: Deploy lambda1
-        if: steps.lambda1-changed.outputs.files == 'Changes detected'
+        if: steps.lambda-changed.outputs.lambda-1 == 'Changes detected'
         run: |
           cd lambda-1
           zip -r lambda_zip.zip *
           aws lambda update-function-code --function-name "lambda-1-${GITHUB_REF##*/}" --zip-file fileb://./lambda_zip.zip
 
-      - name: Check for changes in lambda-2 directory
-        id: lambda2-changed
-        run: |
-          if grep -q "lambda-2" <(git diff --name-only HEAD~1 HEAD); then
-            change_detected="Changes detected"
-            echo "::set-output name=files::$change_detected"
-          fi
-        working-directory: lambda-2
-
       - name: Deploy lambda2
-        if: steps.lambda2-changed.outputs.files == 'Changes detected'
+        if: steps.lambda-changed.outputs.lambda-2 == 'Changes detected'
         run: |
           cd lambda-2
           zip -r lambda_zip.zip *
