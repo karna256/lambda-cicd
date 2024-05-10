@@ -30,8 +30,7 @@ jobs:
           fi
           cd ../lambda-2
           if grep -q "lambda-2" <(git diff --name-only HEAD~1 HEAD); then
-              change_detected="Changes detected"
-              echo "::set-output name=lambda-2::$change_detected"
+              echo "lambda-2=Changes detected" >> $GITHUB_OUTPUT
           fi
 
       - name: Deploy lambda1
